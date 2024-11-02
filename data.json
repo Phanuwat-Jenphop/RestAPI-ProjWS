@@ -1,0 +1,37 @@
+[
+  {
+    "id": "3",
+    "name": "ojar",
+    "type": "sneck",
+    "price": 5000,
+    "imageUrl": "/uploads/1729051795652.webp"
+  },
+  {
+    "id": "1",
+    "name": "simon",
+    "type": "dog",
+    "price": 3500,
+    "imageUrl": "/uploads/1729051849530.jpeg"
+  },
+  {
+    "id": "2",
+    "name": "mumeaw",
+    "type": "coala",
+    "price": 6500,
+    "imageUrl": "/uploads/1729051992626.webp"
+  },
+  {
+    "id": "4",
+    "name": "maco",
+    "type": "panda",
+    "price": 60000,
+    "imageUrl": "/uploads/1729056954476.jpg"
+  },
+  {
+    "id": 5,
+    "name": "tanuki",
+    "type": "bird",
+    "price": 4500,
+    "imageUrl": "/uploads/1730553532659.jpg"
+  }
+]
