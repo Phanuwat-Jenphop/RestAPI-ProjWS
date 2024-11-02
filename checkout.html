@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,8 @@
     <title>Checkout</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f6;
             color: #333;
             padding: 20px;
             margin: 0;
@@ -16,8 +17,8 @@
 
         h1 {
             text-align: center;
-            margin-bottom: 40px;
             color: #4CAF50;
+            font-weight: bold;
         }
 
         .container {
@@ -25,15 +26,15 @@
             margin: auto;
             background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .checkout-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding: 10px 0;
             border-bottom: 1px solid #ddd;
         }
 
@@ -41,40 +42,47 @@
             border-bottom: none;
         }
 
+        .checkout-item h4 {
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .checkout-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
         .total {
             text-align: right;
-            margin-top: 20px;
             font-size: 1.5em;
+            font-weight: bold;
+            color: #4CAF50;
         }
 
-        .checkout-btn {
-            display: block;
+        .confirm-btn, .back-btn {
             width: 100%;
             padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-top: 15px;
+        }
+
+        .confirm-btn {
             background-color: #4CAF50;
             color: white;
-            text-align: center;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
-            margin-top: 20px;
         }
 
-        .checkout-btn:hover {
+        .confirm-btn:hover {
             background-color: #45a049;
         }
-        
+
         .back-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
             background-color: #007bff;
             color: white;
-            text-align: center;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
-            margin-top: 10px;
         }
 
         .back-btn:hover {
@@ -88,74 +96,49 @@
         <h1>Checkout</h1>
 
         <div id="checkoutItems">
-            <!-- รายการสินค้าที่จะซื้อ -->
+            <!-- Selected items will load here dynamically -->
         </div>
 
         <div class="total">
             Total: $<span id="checkoutTotal">0.00</span>
         </div>
 
-        <button class="checkout-btn" onclick="confirmCheckout()">Confirm Purchase</button>
-
+        <button class="confirm-btn" onclick="confirmCheckout()">Confirm Purchase</button>
         <button class="back-btn" onclick="window.location.href='cart.html'">Back to Cart</button>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:3000/items'; // URL สำหรับดึงข้อมูลสินค้า
+        // Same JavaScript logic as before for handling checkout items and total
+
         const checkoutItemsContainer = document.getElementById('checkoutItems');
         const checkoutTotal = document.getElementById('checkoutTotal');
         let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
-        let cartItems = []; // สินค้าที่จะซื้อ
 
-        // ฟังก์ชันโหลดรายการสินค้าที่เลือก
-        async function loadSelectedItems() {
-            const response = await fetch(API_URL);
-            const items = await response.json();
-            
-            // ตรวจสอบว่ามีการส่ง ID ที่ถูกเลือกมาหรือไม่
-            if (selectedItems.length > 0) {
-                cartItems = items.filter(item => selectedItems.includes(item.id));
-                renderCheckout(cartItems);
-            } else {
-                checkoutItemsContainer.innerHTML = '<p>No items selected.</p>';
-            }
-        }
-
-        // ฟังก์ชันแสดงรายการสินค้าที่เลือก
-        function renderCheckout(cart) {
+        function renderCheckout() {
             checkoutItemsContainer.innerHTML = '';
             let total = 0;
 
-            cart.forEach(item => {
-                const itemTotal = item.price; // ราคาแต่ละรายการ
-                total += itemTotal;
-
+            selectedItems.forEach(item => {
+                total += item.price;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'checkout-item';
                 itemDiv.innerHTML = `
-                    <div class="item-info">
-                        <h4>${item.name}</h4>
-                        <span>Price: $${item.price.toFixed(2)}</span>
-                    </div>
-                    <div class="item-price">
-                        $${itemTotal.toFixed(2)}
-                    </div>
+                    <div><strong>ID ${item.id}</strong> - $${item.price.toFixed(2)}</div>
                 `;
                 checkoutItemsContainer.appendChild(itemDiv);
             });
 
-            checkoutTotal.innerText = total.toFixed(2); // แสดงราคารวมทั้งหมด
+            checkoutTotal.innerText = total.toFixed(2);
         }
 
-        // ฟังก์ชันยืนยันการซื้อ
         function confirmCheckout() {
             alert('Purchase confirmed! Thank you for your order.');
-            localStorage.removeItem('selectedItems'); // ลบข้อมูลที่ถูกเลือกหลังการสั่งซื้อ
-            window.location.href = 'homepage.html'; // กลับไปหน้า Homepage หลังยืนยัน
+            localStorage.removeItem('selectedItems');
+            window.location.href = 'homepage.html';
         }
 
-        // โหลดรายการสินค้าที่ถูกเลือกเมื่อหน้าโหลด
-        loadSelectedItems();
+        renderCheckout();
+    
     </script>
 
 </body>

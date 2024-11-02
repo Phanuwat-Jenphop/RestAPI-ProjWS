@@ -7,8 +7,8 @@
     <title>Shopping Cart</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Arial', sans-serif;
+            background: #f3f4f6;
             color: #333;
             padding: 20px;
             margin: 0;
@@ -16,8 +16,8 @@
 
         h1 {
             text-align: center;
-            margin-bottom: 40px;
             color: #4CAF50;
+            font-weight: bold;
         }
 
         .container {
@@ -25,15 +25,15 @@
             margin: auto;
             background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .cart-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            justify-content: space-between;
+            padding: 15px;
             border-bottom: 1px solid #ddd;
         }
 
@@ -41,27 +41,51 @@
             border-bottom: none;
         }
 
+        .cart-item h5 {
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
         .total {
             text-align: right;
-            margin-top: 20px;
-            font-size: 1.5em;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .checkout-btn, .home-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-top: 15px;
         }
 
         .checkout-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
             background-color: #4CAF50;
             color: white;
-            text-align: center;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
-            margin-top: 20px;
         }
 
         .checkout-btn:hover {
             background-color: #45a049;
+        }
+
+        .home-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .home-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -71,7 +95,7 @@
         <h1>Shopping Cart</h1>
 
         <div id="itemList" class="list-group">
-            <!-- สินค้าในตะกร้าจะแสดงที่นี่ -->
+            <!-- Items will load here dynamically -->
         </div>
 
         <div class="total">
@@ -79,71 +103,61 @@
         </div>
 
         <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
-        
-        <button onclick="window.location.href='homepage.html'" class="btn btn-primary">Go to Homepage</button>
+        <button class="home-btn" onclick="window.location.href='homepage.html'">Go to Homepage</button>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:3000/items'; // URL สำหรับดึงข้อมูลสินค้า
-        let selectedItems = []; // รายการสินค้าที่เลือก
+        // Same JavaScript logic as before for handling cart items and total
+        const API_URL = 'http://localhost:3000/items'; 
+        let selectedItems = [];
         let total = 0;
-    
-        // ฟังก์ชันโหลดรายการสินค้า
+
         async function loadItems() {
             const response = await fetch(API_URL);
             const items = await response.json();
             renderItems(items);
         }
-    
-        // ฟังก์ชันแสดงสินค้าในรายการ
+
         function renderItems(items) {
             const itemList = document.getElementById('itemList');
             itemList.innerHTML = '';
             total = 0;
-    
+
             items.forEach(item => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item';
                 itemDiv.innerHTML = `
-                    <div>
-                        <input type="checkbox" value="${item.id}" onchange="toggleSelection(${item.id}, ${item.price})">
-                        <strong>ID ${item.id}</strong> 
-                        <strong> ${item.type}</strong>
-                        <strong>${item.name}</strong> - $${item.price.toFixed(2)}
-                    </div>
+                    <input type="checkbox" value="${item.id}" onchange="toggleSelection(${item.id}, ${item.price})">
+                    <strong>ID ${item.id} - ${item.type} - ${item.name}</strong> - $${item.price.toFixed(2)}
                 `;
                 itemList.appendChild(itemDiv);
             });
         }
-    
-        // ฟังก์ชันจัดการการเลือกสินค้า
+
         function toggleSelection(id, price) {
-            const index = selectedItems.indexOf(id);
+            const index = selectedItems.findIndex(item => item.id === id);
             if (index === -1) {
-                selectedItems.push(id);
-                total += price; // เพิ่มราคาเมื่อเลือก
+                selectedItems.push({ id, price });
+                total += price;
             } else {
                 selectedItems.splice(index, 1);
-                total -= price; // ลบราคาเมื่อไม่เลือก
+                total -= price;
             }
             document.getElementById('cartTotal').innerText = total.toFixed(2);
         }
-    
-        // ฟังก์ชันดำเนินการไปยังหน้า Checkout
+
         function proceedToCheckout() {
             if (selectedItems.length === 0) {
                 alert('Please select at least one item to proceed to checkout.');
                 return;
             }
-            // ส่ง selectedItems ไปยังหน้าการสั่งซื้อ
             localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
             window.location.href = 'checkout.html';
         }
-    
-        // โหลดรายการสินค้าตอนหน้าโหลด
+
         loadItems();
     </script>
-    
 
 </body>
 </html>
+
